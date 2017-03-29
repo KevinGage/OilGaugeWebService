@@ -52,6 +52,8 @@ checkPrerequisites ()
 	else
 		installMYSQL
 	fi
+
+	npm install
 }
 
 collectInformation ()
