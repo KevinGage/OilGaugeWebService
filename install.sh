@@ -62,17 +62,37 @@ collectInformation ()
 	read databaseServicePassword
 	clear
 	printf "Enter a password for the database sa account:\n"
-        read databaseSaPassword
+        read mySqlPassword
 }
 
 createDatabase ()
 {
 	#This should create the MYSWL database
-	 mysql -uroot -p${mySqlPassword} -e "CREATE DATABASE OilGaugeWebService;"
+	mysql -uroot -p${mySqlPassword} -e "CREATE DATABASE OilGaugeWebService;"
 
-	
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.roles (id INT NOT NULL AUTO_INCREMENT, roleName varchar(32) NOT NULL UNIQUE, PRIMARY KEY (id));"
+
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.users (id INT NOT NULL AUTO_INCREMENT, userName varchar(32) NOT NULL UNIQUE, userEmail varchar(1000) NOT NULL UNIQUE, userSalt varchar(1000) NOT NULL, userPass varchar(1000) NOT NULL, userRole INT NOT NULL, FOREIGN KEY (userRole) REFERENCES roles(id),
+PRIMARY KEY (id));"
+
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.devices (id INT NOT NULL AUTO_INCREMENT, deviceIdentifier varchar(1000) NOT NULL UNIQUE, userId INT NOT NULL, FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE, INDEX userId (userId) USING HASH, PRIMARY KEY (id));"
+
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.deviceIpHistory (id INT NOT NULL AUTO_INCREMENT, deviceId INT NOT NULL, FOREIGN KEY (deviceId) REFERENCES devices(id) ON DELETE CASCADE, INDEX deviceId (deviceId) USING HASH, connectionTimestamp DATETIME DEFAULT CURRENT_TIMESTAMP, ip varchar(25) NOT NULL, PRIMARY KEY (id));"
+
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.userIpHistory (id INT NOT NULL AUTO_INCREMENT, userId INT NOT NULL, FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE, INDEX userId (userId) USING HASH, connectionTimestamp DATETIME DEFAULT CURRENT_TIMESTAMP, ip varchar(25) NOT NULL, PRIMARY KEY (id));"
+
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.oilLevel (id INT NOT NULL AUTO_INCREMENT, userId INT NOT NULL, FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE, INDEX userId (userId) USING HASH, deviceId INT NOT NULL, FOREIGN KEY (deviceId) REFERENCES devices(id) ON DELETE CASCADE, INDEX deviceId (deviceId) USING HASH, oilLevelReadingCentimeters DECIMAL(4,2) NOT NULL, PRIMARY KEY (id));"
+
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.batteryLevel (id INT NOT NULL AUTO_INCREMENT, userId INT NOT NULL, FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE, INDEX userId (userId) USING HASH, deviceId INT NOT NULL, FOREIGN KEY (deviceId) REFERENCES devices(id) ON DELETE CASCADE, INDEX deviceId (deviceId) USING HASH, batteryLevelReading INT NOT NULL, PRIMARY KEY (id));"
+
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.oilPrices (id INT NOT NULL AUTO_INCREMENT, priceTimestamp DATETIME DEFAULT CURRENT_TIMESTAMP, oilPrice DECIMAL(4,2) NOT NULL, PRIMARY KEY (id));"
+
+	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'OilGaugeWebService_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
+
+	mysql -uroot -p${mySqlPassword} -e "GRANT ALL ON OilGaugeWebService.* TO 'OilGaugeWebService_User'@'localhost'"
 }
 
 checkIfSudo
 collectInformation
 checkPrerequisites
+createDatabase
