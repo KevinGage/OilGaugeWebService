@@ -94,7 +94,21 @@ PRIMARY KEY (id));"
 	mysql -uroot -p${mySqlPassword} -e "GRANT ALL ON OilGaugeWebService.* TO 'OilGaugeWebService_User'@'localhost'"
 }
 
+generateSelfSignedCerts ()
+{
+	openssl req \
+	-new \
+	-newkey rsa:4096 \
+	-days 1000 \
+	-nodes \
+	-x509 \
+	-subj "/C=US/ST=MA/L=Boston/O=Nope/CN=OilGaugeWebService" \
+	-keyout ./private/certificates/server.key \
+	-out ./private/certificates/server.crt
+}
+
 checkIfSudo
 collectInformation
 checkPrerequisites
 createDatabase
+generateSelfSignedCerts
