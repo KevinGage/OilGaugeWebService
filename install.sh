@@ -107,8 +107,21 @@ generateSelfSignedCerts ()
 	-out ./private/certificates/server.crt
 }
 
+createConfig ()
+{
+	echo "module.exports = {" > ./private/config.js
+	echo "	\"dbAddress\": \"127.0.0.1\"," >> ./private/config.js
+	echo "	\"dbPort\": 1433," >> ./private/config.js
+	echo "	\"dbUser\": \"OilGaugeWebService_User\"," >> ./private/config.js
+	echo "	\"dbPassword\": \"${databaseServicePassword}\"," >> ./private/config.js
+	echo "	\"dbName\": \"OilGaugeWebService\"," >> ./private/config.js
+	echo "	\"hashStreangth\": 10" >> ./private/config.js
+	echo "}" >> ./private/config.js
+}
+
 checkIfSudo
 collectInformation
 checkPrerequisites
 createDatabase
 generateSelfSignedCerts
+createConfig
