@@ -1,0 +1,22 @@
+{
+  "name": "oilgaugewebservice",
+  "version": "1.0.0",
+  "description": "for iot oil tank monitor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinGage/OilGaugeWebService.git"
+  },
+  "author": "Kevin Gage",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/KevinGage/OilGaugeWebService/issues"
+  },
+  "homepage": "https://github.com/KevinGage/OilGaugeWebService#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
