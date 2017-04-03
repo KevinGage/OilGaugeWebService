@@ -92,13 +92,13 @@ PRIMARY KEY (id));"
 
 	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.oilPrices (id INT NOT NULL AUTO_INCREMENT, priceTimestamp DATETIME DEFAULT CURRENT_TIMESTAMP, oilPrice DECIMAL(4,2) NOT NULL, PRIMARY KEY (id));"
 
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "INSERT INTO roles (roleName) VALUES ('admin');"
+	
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "INSERT INTO roles (roleName) VALUES ('user');"
+	
 	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'OilGaugeWebService_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
 
 	mysql -uroot -p${mySqlPassword} -e "GRANT ALL ON OilGaugeWebService.* TO 'OilGaugeWebService_User'@'localhost'"
-	
-	mysql -uroot -p${mySqlPassword} -e "INSERT INTO roles (roleName) VALUES ('admin');"
-	
-	mysql -uroot -p${mySqlPassword} -e "INSERT INTO roles (roleName) VALUES ('user');"
 }
 
 generateSelfSignedCerts ()
