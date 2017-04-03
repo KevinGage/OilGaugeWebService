@@ -65,6 +65,9 @@ collectInformation ()
 	clear
 	printf "Enter a password for the database sa account:\n"
         read mySqlPassword
+	clear
+	printf "Enter a secret used to sign session cookies:\n"
+	read cookieSecret
 }
 
 createDatabase ()
@@ -115,7 +118,8 @@ createConfig ()
 	echo "	\"dbUser\": \"OilGaugeWebService_User\"," >> ./private/config.js
 	echo "	\"dbPassword\": \"${databaseServicePassword}\"," >> ./private/config.js
 	echo "	\"dbName\": \"OilGaugeWebService\"," >> ./private/config.js
-	echo "	\"hashStreangth\": 10" >> ./private/config.js
+	echo "	\"cookieSecret\": \"${cookieSecret}\"," >> ./private/config.js
+	echo "	\"hashStrength\": 10" >> ./private/config.js
 	echo "}" >> ./private/config.js
 }
 
