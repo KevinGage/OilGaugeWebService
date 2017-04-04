@@ -96,6 +96,8 @@ PRIMARY KEY (id));"
 	
 	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "INSERT INTO roles (roleName) VALUES ('user');"
 	
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "INSERT INTO users (userName, userEmail, userSalt, userPass, userRole) VALUES ('administrator', 'admin@localhost', '\$2a\$10\$ycSCnV5iMNmFt3m/UhKH1e', '\$2a\$10\$ycSCnV5iMNmFt3m/UhKH1em0MWE0kYQdWayB3KDSqmpXFiJ0MxExO', 1);"
+	
 	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userName, users.userEmail, users.userSalt, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
 	
 	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'OilGaugeWebService_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
