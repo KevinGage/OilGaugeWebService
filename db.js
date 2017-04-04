@@ -29,12 +29,41 @@ module.exports.users = {
 				pool.getConnection(function(err, connection) {
 					if(err){return cb(err);}
 
-					connection.query('INSERT INTO users (userName, userEmail, userSalt, userPass, userRole) VALUES (?, ?, ?, ?, ?)', [userName, userEmail, salt, hash, userRole], function (err, results, fields) {
+					connection.query('INSERT INTO users (userName, userEmail, userPass, userRole) VALUES (?, ?, ?, ?, ?)', [userName, userEmail, hash, userRole], function (err, results, fields) {
 						connection.release();
 						if(err){return cb(err);}
 						return cb(null);
 					}); 
 				});
+			});
+		});
+	},
+
+	//Searches database for a username and password pair.  If a match is found the entire user object is returned.  Used for authentication
+	selectUsernameAndPassword: function(userName, userPassword, cb) {
+		if(userName === null || userPassword === null)
+                {
+                        return cb('username, and password cannot be null');
+                }
+
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err, null);}
+
+			connection.query('SELECT * from users WHERE userName = ?', [userName], function (err, results, fields) {
+				connection.release();
+				if(err){return cb(err, null);}
+
+				if (results.length === 1){
+					bcrypt.compare(userPassword, results[0].userPass, function(err, res) {
+						if (res == true){
+							cb(null, results[0]);
+						} else {
+							cb(null, null);
+						}
+					});
+				} else {
+					cb(null, null);
+				}
 			});
 		});
 	},

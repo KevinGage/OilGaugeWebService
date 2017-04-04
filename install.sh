@@ -77,7 +77,7 @@ createDatabase ()
 
 	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.roles (id INT NOT NULL AUTO_INCREMENT, roleName varchar(32) NOT NULL UNIQUE, PRIMARY KEY (id));"
 
-	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.users (id INT NOT NULL AUTO_INCREMENT, userName varchar(32) NOT NULL UNIQUE, userEmail varchar(1000) NOT NULL UNIQUE, userSalt varchar(1000) NOT NULL, userPass varchar(1000) NOT NULL, userRole INT NOT NULL, FOREIGN KEY (userRole) REFERENCES roles(id),
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.users (id INT NOT NULL AUTO_INCREMENT, userName varchar(32) NOT NULL UNIQUE, userEmail varchar(1000) NOT NULL UNIQUE, userPass varchar(1000) NOT NULL, userRole INT NOT NULL, FOREIGN KEY (userRole) REFERENCES roles(id),
 PRIMARY KEY (id));"
 
 	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE TABLE OilGaugeWebService.devices (id INT NOT NULL AUTO_INCREMENT, deviceIdentifier varchar(1000) NOT NULL UNIQUE, userId INT NOT NULL, FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE, INDEX userId (userId) USING HASH, PRIMARY KEY (id));"
@@ -96,9 +96,9 @@ PRIMARY KEY (id));"
 	
 	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "INSERT INTO roles (roleName) VALUES ('user');"
 	
-	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "INSERT INTO users (userName, userEmail, userSalt, userPass, userRole) VALUES ('administrator', 'admin@localhost', '\$2a\$10\$ycSCnV5iMNmFt3m/UhKH1e', '\$2a\$10\$ycSCnV5iMNmFt3m/UhKH1em0MWE0kYQdWayB3KDSqmpXFiJ0MxExO', 1);"
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "INSERT INTO users (userName, userEmail, userPass, userRole) VALUES ('administrator', 'admin@localhost', '\$2a\$10\$ycSCnV5iMNmFt3m/UhKH1em0MWE0kYQdWayB3KDSqmpXFiJ0MxExO', 1);"
 	
-	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userName, users.userEmail, users.userSalt, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
+	mysql -uroot -p${mySqlPassword} -D OilGaugeWebService -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userName, users.userEmail, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
 	
 	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'OilGaugeWebService_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
 
