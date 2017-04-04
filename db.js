@@ -49,13 +49,14 @@ module.exports.users = {
 		pool.getConnection(function(err, connection) {
 			if(err){return cb(err, null);}
 
-			connection.query('SELECT * from users WHERE userName = ?', [userName], function (err, results, fields) {
+			connection.query('SELECT id, userName, userEmail, roleName, userPass from usersWithRoles WHERE userName = ?', [userName], function (err, results, fields) {
 				connection.release();
 				if(err){return cb(err, null);}
 
 				if (results.length === 1){
 					bcrypt.compare(userPassword, results[0].userPass, function(err, res) {
 						if (res == true){
+							results[0].userPass = null;
 							cb(null, results[0]);
 						} else {
 							cb(null, null);
@@ -67,6 +68,29 @@ module.exports.users = {
 			});
 		});
 	},
+
+        //Searches database for a user by their id.  Used for already logged in sessions
+        selectById: function(id, cb) {
+                if (id === null)
+                {
+                        return cb('id cannot be null');
+                }
+
+                pool.getConnection(function(err, connection) {
+                        if(err){return cb(err, null);}
+
+                        connection.query('SELECT id, userName, userEmail, roleName from usersWithRoles WHERE id = ?', [id], function (err, results, fields) {
+                                connection.release();
+                                if(err){return cb(err, null);}
+
+                                if (results.length === 1){
+                                        cb(null, results[0]);
+                                } else {
+                                        return cb('id not found', null);
+                                }
+                        });
+                });
+        },
 
 	//Returns all username in database
 	returnAllNames: function(cb) {
