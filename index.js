@@ -92,7 +92,7 @@ user.use(function (req) {
 });
 
 
-//ROUTES TO ADD OR DELETE OIL AND BATTERY FROM DATABASE
+//ROUTES TO ADD OR DELETE OIL AND BATTERY DATA FROM DATABASE
 //post new oil level for a device
 app.post('/oilLevel', user.can('post data'), function (req, res) {
 	res.send('coming soon');
@@ -104,29 +104,29 @@ app.post('batteryLevel', user.can('post data'), function (req, res) {
 });
 
 //delete an oil level from database
-app.delete('/oilLevel:levelId', user.can('delete data'), function (req, res) {
+app.delete('/oilLevel/:levelId', user.can('delete data'), function (req, res) {
         res.send('coming soon');
 });
 
 //delete a battery level from database
-app.delete('/battery:levelId', user.can('delete data'), function (req, res) {
+app.delete('/battery/:levelId', user.can('delete data'), function (req, res) {
         res.send('coming soon');
 });
 
 
 //ROUTES FOR USERS TO RETRIEVE DATA
 //return most recent battery level for a device
-app.get('/batteryLevel/deviceId', user.can('read data'), function (req, res) {
+app.get('/batteryLevel/:deviceId', user.can('read data'), function (req, res) {
 	res.send('coming soon');
 });
 
 //return battery levels for a device over the last x days
-app.get('/batteryLevel/deviceId/:days', user.can('read data'), function (req, res) {
+app.get('/batteryLevel/:deviceId/:days', user.can('read data'), function (req, res) {
         res.send('coming soon');
 });
 
 //return battery level for a device between x and y dates
-app.get('/batteryLevel/deviceId/:from-:to', user.can('read data'), function (req, res) {
+app.get('/batteryLevel/:deviceId/:from-:to', user.can('read data'), function (req, res) {
         res.send('coming soon');
 });
 
@@ -161,6 +161,37 @@ app.get('/oilPrice/:from-:to', user.can('read data'), function (req, res) {
 });
 
 
+//ROUTES FOR MANAGE DEVICES
+//return all devices for an administrator, or return owned devices for a user
+app.get('/device', user.can('read devices'), function (req, res) {
+        res.send('coming soon');
+});
+
+//return a device
+app.get('/device/:deviceId', user.can('read devices'), function (req, res) {
+        res.send('coming soon');
+});
+
+//add a new device for current user
+app.post('/device', user.can('create device'), function (req, res) {
+        res.send('coming soon');
+});
+
+//add a new device for a particular user
+app.post('/device/:userId', user.can('manage devices'), function (req, res) {
+        res.send('coming soon');
+});
+
+//update a device
+app.put('/device/:deviceId', user.can('manage devices'), function (req, res) {
+        res.send('coming soon');
+});
+
+//delete a device
+app.delete('/device/:deviceId', user.can('manage devices'), function (req, res) {
+        res.send('coming soon');
+});
+
 //ROUTES FOR MANAGING USER ACCOUNTS
 //get all users
 app.get('/user', user.can('manage users'), function (req, res) {
@@ -193,12 +224,12 @@ app.post('/user', user.can('manage users'), function (req, res) {
 });
 
 //update a user for new password or role
-app.put('/user:userId', user.can('manage users'), function (req, res) {
+app.put('/user/:userId', user.can('manage users'), function (req, res) {
 	res.send('coming soon');
 });
 
 //delete a user
-app.delete('/user:userId', user.can('manage users'), function (req, res) {
+app.delete('/user/:userId', user.can('manage users'), function (req, res) {
 	res.send('coming soon');
 });
 
