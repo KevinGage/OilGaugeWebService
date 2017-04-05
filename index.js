@@ -7,6 +7,7 @@ var certificate = fs.readFileSync('private/certificates/server.crt', 'utf8');
 var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
+var connectRoles = require('connect-roles');
 var app = express();
 var config = require('./private/config.js');
 
@@ -31,6 +32,16 @@ passport.deserializeUser(function(id, cb) {
 	});
 });
 
+//Setup connect-roles for authorization
+var user = new connectRoles({
+	failureHandler: function (req, res, action) {
+		//optional function to run custom code when user fails authorization
+		var accept = req.headers.accept || '';
+		res.status(403);
+		res.send('Access Denied');
+	}
+});
+
 //Load middleware
 app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({ secret: config.cookieSecret, resave: false, saveUninitialized: false }));
@@ -38,6 +49,9 @@ app.use(require('express-session')({ secret: config.cookieSecret, resave: false,
 //Initialize Passport for authentication
 app.use(passport.initialize());
 app.use(passport.session());
+
+//Initialize connect-roles for authoerization
+app.use(user.middleware());
 
 //Routes used for authentication
 app.post('/login', passport.authenticate('local'), function(req, res) {
