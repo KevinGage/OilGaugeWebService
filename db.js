@@ -29,7 +29,7 @@ module.exports.users = {
 				pool.getConnection(function(err, connection) {
 					if(err){return cb(err);}
 
-					connection.query('INSERT INTO users (userName, userEmail, userPass, userRole) VALUES (?, ?, ?, ?, ?)', [userName, userEmail, hash, userRole], function (err, results, fields) {
+					connection.query('INSERT INTO users (userName, userEmail, userPass, userRole) VALUES (?, ?, ?, ?)', [userName, userEmail, hash, userRole], function (err, results, fields) {
 						connection.release();
 						if(err){return cb(err);}
 						return cb(null);
