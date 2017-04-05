@@ -63,8 +63,19 @@ app.get('/logout', function(req, res){
 	res.send('logged out');
 });
 
+//Setup roles for authorization
+user.use(function (req, action) {
+	if (!req.isAuthenticated()) return action === 'view login screen';
+});
+
+user.use(function (req) {
+	if (req.user.roleName === 'admin') {
+		return true;
+	}
+});
+
 //TEST ROUTES.  These are all for development testing.  They shouldn't be used in production.
-app.post('/user', function (req, res) {
+app.post('/user', user.can('add new users'), function (req, res) {
   db.users.insertNew(req.body.username, req.body.password, req.body.role, req.body.email, function(err) {
     if(!err) {
       console.log('inserted data');
