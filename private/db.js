@@ -1,5 +1,5 @@
 //Import modules
-var config = require('./private/config.js');
+var config = require('./config.js');
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
 
