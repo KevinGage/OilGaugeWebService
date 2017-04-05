@@ -252,7 +252,7 @@ app.get('/welcome', function (req, res) {
 });
 
 app.get('/pug', user.can('read data'), function(req, res, next) {
-	res.render('pug', { name: req.user.userName });
+	res.render('pug', { title: 'Testing pug', name: req.user.userName });
 });
 
 //Listen on https
