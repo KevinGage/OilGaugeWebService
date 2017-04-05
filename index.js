@@ -12,6 +12,10 @@ var app = express();
 var config = require('./private/config.js');
 
 
+//View engine setup
+app.set('views', 'views');
+app.set('view engine', 'pug');
+
 //Setup TLS
 var credentials = {key: privateKey, cert: certificate};
 
@@ -60,7 +64,11 @@ app.use(passport.session());
 app.use(user.middleware());
 
 
-//Routes used for authentication
+//ROUTES FOR STATIC PUBLIC CONTENT
+app.use(express.static('public'));
+
+
+//ROUTES FOR AUTHENTICATION
 app.post('/login', passport.authenticate('local'), function(req, res) {
 	res.redirect('/welcome');
 });
@@ -243,6 +251,9 @@ app.get('/welcome', function (req, res) {
 	}
 });
 
+app.get('/pug', user.can('read data'), function(req, res, next) {
+	res.render('pug', { name: req.user.userName });
+});
 
 //Listen on https
 var httpsServer = https.createServer(credentials, app);
