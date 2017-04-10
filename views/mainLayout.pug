@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Smart Gage
+    link(rel='stylesheet', type='text/css', href='stylesheets/mainLayout.css')
+    script(src='javascript/signoutMenu.js')
+  body
+    .row
+      .col-1.logo
+        h3
+          img#logo(src='images/logo.png', alt='logo')
+      .col-9.filler
+      .col-2.dropdown
+        button.username.dropbtn(onclick='showSignoutDropdown()') #{name}
+        #myDropdown.dropdown-content
+          a(href='/logout') Sign Out
+    .row.full
+      .col-1.menu.full
+        ul
+          li Tank Status
+          li Oil History
+          li Oil Price
+          li Battery History
+          li Settings
+      .col-11

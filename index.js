@@ -16,6 +16,7 @@ var config = require('./private/config.js');
 app.set('views', 'views');
 app.set('view engine', 'pug');
 
+
 //Setup TLS
 var credentials = {key: privateKey, cert: certificate};
 
@@ -45,7 +46,6 @@ var user = new connectRoles({
 		//optional function to run custom code when user fails authorization
 		var accept = req.headers.accept || '';
 		res.status(403);
-		res.send('Access Denied');
 	}
 });
 
@@ -69,13 +69,25 @@ app.use(express.static('public'));
 
 
 //ROUTES FOR AUTHENTICATION
-app.post('/login', passport.authenticate('local'), function(req, res) {
-	res.redirect('/welcome');
+app.get('/login', function(req, res, next) {
+	res.render('login');
+});
+
+app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }), function(req, res) {
+
 });
 
 app.get('/logout', function(req, res){
 	req.logout();
-	res.send('logged out');
+	res.redirect('/login');
+});
+
+app.get('/', function (req, res) {
+        if (!req.user) {
+                res.redirect('/login');
+        } else {
+                res.render('mainLayout', { name: req.user.userName });
+        }
 });
 
 
@@ -241,19 +253,6 @@ app.delete('/user/:userId', user.can('manage users'), function (req, res) {
 	res.send('coming soon');
 });
 
-
-//TEST ROUTES.  These are all for development testing.  They shouldn't be used in production.
-app.get('/welcome', function (req, res) {
-	if (!req.user) { 
-		res.send('You are not logged in'); 
-	} else {
-		res.send('You are logged in.  Welcome ' + req.user.userName + '!');
-	}
-});
-
-app.get('/pug', user.can('read data'), function(req, res, next) {
-	res.render('pug', { title: 'Testing pug', name: req.user.userName });
-});
 
 //Listen on https
 var httpsServer = https.createServer(credentials, app);

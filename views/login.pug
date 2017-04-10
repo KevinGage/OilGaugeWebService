@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Smart Gage
+    link(rel='stylesheet', href='/stylesheets/login.css')
+  body
+    .row.full
+      .col-3.filler.full
+        p
+      .col-6.login.full
+        img(src='images/logo.png', alt='logo')
+        form(action='/login', method='post')
+          br
+          br
+          p Username
+          input(type='text', name='username')
+          p Password
+          input(type='password', name='password')
+          br
+          br
+          input.button(type='submit', value='Sign In')
+      .col-3.filler.full
+        p
