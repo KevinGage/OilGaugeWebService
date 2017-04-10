@@ -105,3 +105,24 @@ module.exports.users = {
 		});
 	}
 }
+
+//Export SQL Queries For Devices
+module.exports.devices = {
+	//Inserts a new record into the devices table
+        insertNew: function(deviceIdentifier, userId, cb) {
+                if(deviceIdentifier === null || userId === null )
+                {
+                        return cb('deviceIdentifier and userId cannot be null');
+                }
+
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+
+			connection.query('INSERT INTO devices (deviceIdentifier, userId) VALUES (?, ?)', [deviceIdentifier, userId], function (err, results, fields) {
+				connection.release();
+                                if(err){return cb(err);}
+                                return cb(null);
+                        });
+                });
+        }
+}
