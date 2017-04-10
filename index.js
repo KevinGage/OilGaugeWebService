@@ -6,6 +6,7 @@ var privateKey  = fs.readFileSync('private/certificates/server.key', 'utf8');
 var certificate = fs.readFileSync('private/certificates/server.crt', 'utf8');
 var express = require('express');
 var passport = require('passport');
+var favicon = require('serve-favicon');
 var Strategy = require('passport-local').Strategy;
 var connectRoles = require('connect-roles');
 var app = express();
@@ -66,6 +67,10 @@ app.use(user.middleware());
 
 //ROUTES FOR STATIC PUBLIC CONTENT
 app.use(express.static('public'));
+
+
+//Setup favicon
+app.use(favicon(__dirname + '/public/images/logo.ico'));
 
 
 //ROUTES FOR AUTHENTICATION
