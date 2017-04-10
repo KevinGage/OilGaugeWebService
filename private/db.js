@@ -11,6 +11,15 @@ var pool = mysql.createPool({
 	database	:  config.dbName
 });
 
+//Exports a way to gracefully shutdown the database connection
+module.exports.dbConnection = {
+	disconnect: function(cb) {
+		pool.end(function (err) {
+			return cb(err);
+		});
+	}
+}
+
 //Export SQL Queries For Users
 module.exports.users = {
 	//Inserts a new record into the users table
@@ -121,6 +130,7 @@ module.exports.devices = {
 			connection.query('INSERT INTO devices (deviceIdentifier, userId) VALUES (?, ?)', [deviceIdentifier, userId], function (err, results, fields) {
 				connection.release();
                                 if(err){return cb(err);}
+				console.log("inserted data");
                                 return cb(null);
                         });
                 });
