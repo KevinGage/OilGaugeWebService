@@ -1,6 +1,6 @@
 //Import modules
 var fs = require('fs');
-var db = require('./db.js');
+var db = require('./private/db.js');
 var https = require('https');
 var privateKey  = fs.readFileSync('private/certificates/server.key', 'utf8');
 var certificate = fs.readFileSync('private/certificates/server.crt', 'utf8');
@@ -10,6 +10,11 @@ var Strategy = require('passport-local').Strategy;
 var connectRoles = require('connect-roles');
 var app = express();
 var config = require('./private/config.js');
+
+
+//View engine setup
+app.set('views', 'views');
+app.set('view engine', 'pug');
 
 
 //Setup TLS
@@ -41,7 +46,6 @@ var user = new connectRoles({
 		//optional function to run custom code when user fails authorization
 		var accept = req.headers.accept || '';
 		res.status(403);
-		res.send('Access Denied');
 	}
 });
 
@@ -60,14 +64,30 @@ app.use(passport.session());
 app.use(user.middleware());
 
 
-//Routes used for authentication
-app.post('/login', passport.authenticate('local'), function(req, res) {
-	res.redirect('/welcome');
+//ROUTES FOR STATIC PUBLIC CONTENT
+app.use(express.static('public'));
+
+
+//ROUTES FOR AUTHENTICATION
+app.get('/login', function(req, res, next) {
+	res.render('login');
+});
+
+app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }), function(req, res) {
+
 });
 
 app.get('/logout', function(req, res){
 	req.logout();
-	res.send('logged out');
+	res.redirect('/login');
+});
+
+app.get('/', function (req, res) {
+        if (!req.user) {
+                res.redirect('/login');
+        } else {
+                res.render('mainLayout', { name: req.user.userName });
+        }
 });
 
 
@@ -231,16 +251,6 @@ app.put('/user/:userId', user.can('manage users'), function (req, res) {
 //delete a user
 app.delete('/user/:userId', user.can('manage users'), function (req, res) {
 	res.send('coming soon');
-});
-
-
-//TEST ROUTES.  These are all for development testing.  They shouldn't be used in production.
-app.get('/welcome', function (req, res) {
-	if (!req.user) { 
-		res.send('You are not logged in'); 
-	} else {
-		res.send('You are logged in.  Welcome ' + req.user.userName + '!');
-	}
 });
 
 
